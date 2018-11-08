@@ -5,7 +5,7 @@ const getWeather = (lat, long, callback) => {
     {
       url: `https://api.darksky.net/forecast/${
         apiKey.weatherkey
-      }/${lat},${long}`,
+      }/${lat},${long}?exclude=minutely, daily&units=ca`,
       json: true
     },
     (error, response, body) => {
