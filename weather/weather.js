@@ -1,13 +1,11 @@
 //const request = require("request");
-const apiKey = require("./../config/config.json");
+const apiKey = require("./../config/config.json").keys.weatherkey;
 const fetch = require("node-fetch");
 
 const getWeather = async (latitude, longitude) => {
   try {
     const weather = await fetch(
-      `https://api.darksky.net/forecast/${
-        apiKey.weatherkey
-      }/${latitude},${longitude}?exclude=minutely, hourly&units=ca`
+      `https://api.darksky.net/forecast/${apiKey}/${latitude},${longitude}?exclude=minutely, hourly&units=ca`
     );
     if (weather.status !== 200) {
       throw new Error("Could not connect to the server");

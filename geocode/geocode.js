@@ -1,17 +1,16 @@
 //const request = require("request");
 
 const fetch = require("node-fetch");
-const apiKey = require("./../config/config.json");
+const apiKey = require("./../config/config.json").keys.geokey;
 
 const getCoords = address => {
   const coords = fetch(
-    `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${
-      apiKey.geokey
-    }`
+    `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${apiKey}`
   )
     .then(result => result.json())
     .then(coords => {
       return (result = {
+        address: coords.results[0].formatted_address,
         latitude: coords.results[0].geometry.location.lat,
         longitude: coords.results[0].geometry.location.lng
       });
