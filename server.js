@@ -3,6 +3,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const { mongoose } = require("./db/mongoose");
 const { User } = require("./models/user");
+const geocode = require("./geocode/geocode");
 var hbs = require("hbs");
 const port = process.env.PORT;
 
@@ -14,7 +15,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
 app.get("/", (req, res) => {
-  res.status(200).render("index.hbs");
+  res.status(200).render("index.hbs", {
+    method: "post",
+    action: ""
+  });
 });
 
 app.post("/", (req, res) => {
