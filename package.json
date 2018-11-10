@@ -10,12 +10,13 @@
   "license": "ISC",
   "dependencies": {
     "@sendgrid/mail": "^6.3.1",
-    "node-cron": "^2.0.3",
-    "node-fetch": "^2.2.1",
-    "request": "^2.88.0",
     "body-parser": "^1.18.3",
     "express": "^4.16.4",
+    "hbs": "^4.0.1",
     "mongodb": "^3.0.0",
-    "mongoose": "^5.3.5"
+    "mongoose": "^5.3.5",
+    "node-cron": "^2.0.3",
+    "node-fetch": "^2.2.1",
+    "request": "^2.88.0"
   }
 }
