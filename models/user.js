@@ -13,6 +13,12 @@ var UserSchema = new mongoose.Schema({
     required: true,
     minlength: 3
   },
+  latitude: {
+    type: String
+  },
+  longitude: {
+    type: String
+  },
   time: {
     type: String,
     required: true,
@@ -21,8 +27,7 @@ var UserSchema = new mongoose.Schema({
   units: {
     type: String,
     required: true,
-    minlength: 2
-    // ca, si, us,
+    minlength: 2 // ca, si, us,
   }
 });
 

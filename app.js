@@ -20,12 +20,14 @@ const FtoC = f => {
 
 const input = {
   time: "8:00 AM",
-  location: "205 Osborn Ave, Brantford, ON",
+  location: "Brantford",
   email: "maxim.lysakovsky@gmail.com",
-  units: "ca" //ca, si, us,
+  units: "ca", //ca, si, us,
+  country: "us"
 };
 
-const encodedAddress = encodeURIComponent(input.location);
+const encodedLocation = encodeURIComponent(input.location);
+const country = input.country;
 
 //TODO: rework this file to include express.js.
 
@@ -33,7 +35,7 @@ const encodedAddress = encodeURIComponent(input.location);
 
 const myWeather = async () => {
   try {
-    const coords = await geocode.getCoords(encodedAddress);
+    const coords = await geocode.getCoords(encodedLocation, country);
     const weatherData = await weather.getWeather(
       coords.latitude,
       coords.longitude

@@ -3,11 +3,35 @@
 const fetch = require("node-fetch");
 const apiKey = require("./../config/config.json").keys.geokey;
 
-const getCoords = address => {
+const getCoords = (location, country) => {
   const coords = fetch(
-    `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${apiKey}`
+    `https://maps.googleapis.com/maps/api/geocode/json?components=locality:${location}|country:${country}&key=${apiKey}`
   )
-    .then(result => result.json())
+    .then(result => {
+      switch (result.status) {
+        case 200:
+          if (Object.keys(result).length !== 0) {
+            return result.json();
+          } else {
+            throw new Error("No results found here");
+          }
+        case "ZERO_RESULTS":
+          throw new Error("No results found");
+
+        case "REQUEST_DENIED":
+          throw new Error("Request denied by Google API");
+
+        case "INVALID_REQUEST":
+          throw new Error("Invalid request, check location");
+
+        case "UKNOWN_ERROR":
+          throw new Error("Error, try again");
+
+        default:
+          throw new Error("ERROR!!");
+      }
+    })
+    .catch(err => console.log(err))
     .then(coords => {
       return (result = {
         address: coords.results[0].formatted_address,
@@ -15,6 +39,7 @@ const getCoords = address => {
         longitude: coords.results[0].geometry.location.lng
       });
     });
+
   return coords;
 };
 
