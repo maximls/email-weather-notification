@@ -1,10 +1,9 @@
 //PROCESS DATA & COMPOSE EMAIL MESSAGE
 
-const createMessage = (weatherData, address, messageData) => {
+const createMessage = (weatherData, location, email) => {
   const message = {
-    to: "max@max.com",
-    //to: messageData.email,
-    from: "weather@maximonline.ca",
+    to: email, //"maxim.lysakovsky@gmail.com",
+    from: "weather@emailweather.info",
     subject: weatherData.daily.summary,
     templateId: "d-dbbb8898cd7d467ba82674016ba2e6b4",
 
@@ -12,7 +11,7 @@ const createMessage = (weatherData, address, messageData) => {
       currently: weatherData.currently,
       dailySummary: weatherData.daily.summary,
       dailyData: weatherData.daily.data,
-      address
+      location: location
     }
   };
 

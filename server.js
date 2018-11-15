@@ -126,6 +126,6 @@ app.post("/delete/:email", (req, res) => {
     .catch(err => res.status(400).send(err));
 });
 
-app.listen(port, () => {
+module.exports = app.listen(port, () => {
   console.log(`server running on port ${port}`);
 });

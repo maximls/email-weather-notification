@@ -22,7 +22,7 @@ var UserSchema = new mongoose.Schema({
   time: {
     type: String,
     required: true,
-    minlength: 4
+    minlength: 2
   },
   units: {
     type: String,

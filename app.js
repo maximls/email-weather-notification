@@ -1,56 +1,41 @@
+require("./config/config");
 const geocode = require("./geocode/geocode");
 const weather = require("./weather/weather");
 const cron = require("node-cron");
-const sendWeatherEmail = require("./sendmail/sendmail");
 const message = require("./sendmail/create-message");
+//const { mongoose } = require("./db/mongoose");
+const { User } = require("./models/user");
+const sgMail = require("@sendgrid/mail");
+const server = require("./server");
 
-cron.schedule(`0-59/15 * * * *`, () => {
-  //This will run every 15 minutes
-  //TODO: 1. Get current time. 2.Query DB for user info every 15 min and find the time that falls within this range
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-  myWeather(); //Need to create a loop that will fire up this function for every returned db location (write a mock setTimeout with a loop to see how it behaves)
-  console.log("Running every minute", new Date().getMinutes());
+server;
+
+cron.schedule(`* * * * *`, () => {
+  findUsers();
+  console.log("Running ", new Date().getMinutes());
 });
 
-const FtoC = f => {
-  return Math.round((f - 32) * (5 / 9));
-};
-
-//TODO: make db with model below
-
-const input = {
-  time: "8:00 AM",
-  location: "Brantford",
-  email: "maxim.lysakovsky@gmail.com",
-  units: "ca", //ca, si, us,
-  country: "us"
-};
-
-const encodedLocation = encodeURIComponent(input.location);
-const country = input.country;
-
-//TODO: rework this file to include express.js.
-
-//TODO: every 5 min chron will fire up a function that will check the database for times and then request the weather and email to users.
-
-const myWeather = async () => {
+const findUsers = async () => {
   try {
-    const coords = await geocode.getCoords(encodedLocation, country);
-    const weatherData = await weather.getWeather(
-      coords.latitude,
-      coords.longitude
-    );
-    const messageData = message.createMessage(weatherData, coords.address);
-    //TODO: Compose email message
-    //TODO: Send email(message)
-    return messageData;
+    let now = new Date().getHours();
+    const users = await User.find({ time: now });
+    users.map(async user => {
+      const weatherData = await weather.getWeather(
+        user.latitude,
+        user.longitude,
+        user.units
+      );
+      const messageData = message.createMessage(
+        weatherData,
+        user.location,
+        user.email
+      );
+      const email = await sgMail.send(messageData);
+      //return email[0].statusCode;
+    });
   } catch (err) {
     throw new Error(`ERROR: ${err}`);
   }
 };
-
-myWeather()
-  .then(result => {
-    console.log(result);
-  })
-  .catch(err => console.log(err));
