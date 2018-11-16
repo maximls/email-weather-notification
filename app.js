@@ -1,6 +1,6 @@
 require("./config/config");
 const geocode = require("./geocode/geocode");
-const weather = require("./weather/weather");
+const { getWeather, addTime } = require("./weather/weather");
 const cron = require("node-cron");
 const message = require("./sendmail/create-message");
 //const { mongoose } = require("./db/mongoose");
@@ -20,17 +20,20 @@ cron.schedule(`* * * * *`, () => {
 const findUsers = async () => {
   try {
     let now = new Date().getHours();
-    const users = await User.find({ time: now });
+    const users = await User.find({ time: `${now}:00` });
     users.map(async user => {
-      const weatherData = await weather.getWeather(
+      const weatherData = await getWeather(
         user.latitude,
         user.longitude,
         user.units
       );
+      const weatherWithDate = await addTime(weatherData);
+
       const messageData = message.createMessage(
-        weatherData,
+        weatherWithDate,
         user.location,
-        user.email
+        user.email,
+        user._id
       );
       const email = await sgMail.send(messageData);
       //return email[0].statusCode;

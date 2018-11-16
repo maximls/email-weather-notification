@@ -2,6 +2,7 @@ require("./config/config");
 const express = require("express");
 const bodyParser = require("body-parser");
 const { mongoose } = require("./db/mongoose");
+const { ObjectID } = require("mongodb");
 const { User } = require("./models/user");
 const geocode = require("./geocode/geocode");
 var hbs = require("hbs");
@@ -22,7 +23,6 @@ app.get("/", (req, res) => {
 });
 
 app.post("/", (req, res) => {
-  //TODO: Before saving, perform a look up on the address and return the address to the user to confirm that it is correct. Then save.
   geocode
     .getCoords(req.body.location, req.body.country)
     .then(result => {
@@ -44,7 +44,7 @@ app.post("/", (req, res) => {
       doc => {
         res
           .status(200)
-          .send(`Success! You will get notifications at ${doc.email}`);
+          .render("success.hbs", { location: doc.location, email: doc.email });
       },
       err => {
         if (err.code == 11000) {
@@ -69,14 +69,17 @@ app.post("/location/:location&:country", (req, res) => {
   });
 });
 
-app.get("/update/:email", (req, res) => {
-  const email = req.params.email;
-  User.findOne({ email })
+app.get("/update/:id", (req, res) => {
+  const id = req.params.id;
+  if (!ObjectID.isValid(id)) {
+    res.status(404).send("Invalid ID");
+  }
+  User.findById({ _id: id })
     .then(fields => {
       res.status(200).render("update.hbs", {
         method: "post",
         action: "/update",
-        param: email,
+        param: id,
         email: fields.email,
         location: fields.location,
         time: fields.time,
@@ -86,11 +89,13 @@ app.get("/update/:email", (req, res) => {
     .catch(err => res.status(400).send("Cannot find user"));
 });
 
-app.post("/update/:email", (req, res) => {
-  const email = req.params.email;
-
-  User.findOneAndUpdate(
-    { email },
+app.post("/update/:id", (req, res) => {
+  const id = req.params.id;
+  if (!ObjectID.isValid(id)) {
+    res.status(404).send("Invalid ID");
+  }
+  User.findByIdAndUpdate(
+    { _id: id },
     {
       email: req.body.email,
       location: req.body.location,
@@ -108,9 +113,12 @@ app.post("/update/:email", (req, res) => {
     .catch(err => res.status(400).send());
 });
 
-app.get("/delete/:email", (req, res) => {
-  const email = req.params.email;
-  User.findOne({ email })
+app.get("/delete/:id", (req, res) => {
+  const id = req.params.id;
+  if (!ObjectID.isValid(id)) {
+    res.status(404).send("Invalid ID");
+  }
+  User.findByIdAndDelete({ _id: id })
     .then(user => {
       res.status(200).render("delete.hbs", {
         email: user.email
@@ -119,12 +127,12 @@ app.get("/delete/:email", (req, res) => {
     .catch(err => res.status(400).send(err));
 });
 
-app.post("/delete/:email", (req, res) => {
-  const email = req.params.email;
-  User.findOneAndDelete({ email }, { select: email })
-    .then(user => res.status(200).send(`User ${user.email} deleted`))
-    .catch(err => res.status(400).send(err));
-});
+// app.post("/delete/:id", (req, res) => {
+//   const email = req.params.id;
+//   User.findOneAndDelete({ email }, { select: email })
+//     .then(user => res.status(200).send(`User ${user.email} deleted`))
+//     .catch(err => res.status(400).send(err));
+// });
 
 module.exports = app.listen(port, () => {
   console.log(`server running on port ${port}`);

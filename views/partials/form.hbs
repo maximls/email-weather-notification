@@ -1,10 +1,17 @@
 
     <h1> The form is here!!!</h1>
     <form method="{{method}}" action="{{action}}/{{param}}">
-       <label>Email</label> <input type="text" value="{{email}}" name = "email"/>
-       <label>Location</label> <input type="text" value="{{location}}" name = "location"/>
-       <label>Country</label> <input type="text" value="{{country}}" name = "country"/>
-       <label>Time</label> <input type="text" value="{{time}}" name = "time"/>
-       <label>Units</label> <input type="text" value="{{units}}" name = "units"/>
+       <label>Email</label> <input required = true type="email" value="{{email}}" name = "email"/>
+       <label>Location</label> <input required = true type="text" value="{{location}}" name = "location"/>
+       <label>Country</label> <input  type="text" value="{{country}}" name = "country"/>
+       <label>Time</label> <input type="time" value="{{time}}" name = "time" step="3600" validationMessage = ""/>
+       <input type="hidden" value="auto" name = "units"/>
         <button type="submit">Submit</button>
     </form>
+<!-- 
+    TODO: on change focus on location and country perform an AJAX call to the server to confirm the address, show it to use to confirm.
+    TODO: add validation to ensure all fields are filled in
+    TODO: Country and unites change to dropdowns
+    TODO: Add Google captcha to prevent spam
+
+-->

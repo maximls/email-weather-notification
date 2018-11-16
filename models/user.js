@@ -27,7 +27,7 @@ var UserSchema = new mongoose.Schema({
   units: {
     type: String,
     required: true,
-    minlength: 2 // ca, si, us,
+    minlength: 2 // auto, ca, si, us,
   }
 });
 

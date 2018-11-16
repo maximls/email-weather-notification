@@ -2,10 +2,20 @@
 const apiKey = require("./../config/config.json").keys.weatherkey;
 const fetch = require("node-fetch");
 
+const formattedTime = () => {
+  const date = new Date(Date.now());
+  // let day = date.getDate();
+  // let dayOfWeek = date.getDay();
+  // let month = date.getMonth();
+
+  return date.toString();
+  //return `${dayOfWeek}, ${month} ${day}`;
+};
+
 const getWeather = async (latitude, longitude, units) => {
   try {
     const weather = await fetch(
-      `https://api.darksky.net/forecast/${apiKey}/${latitude},${longitude}?exclude=minutely, hourly&units=${units}`
+      `https://api.darksky.net/forecast/${apiKey}/${latitude},${longitude}?exclude=minutely,hourly,flags&units=${units}`
     );
     if (weather.status !== 200) {
       throw new Error("Could not connect to the server");
@@ -17,26 +27,14 @@ const getWeather = async (latitude, longitude, units) => {
   }
 };
 
-// const getWeather = (lat, long, callback) => {
-//   request(
-//     {
-//       url: `https://api.darksky.net/forecast/${
-//         apiKey.weatherkey
-//       }/${lat},${long}?exclude=minutely, daily&units=ca`,
-//       json: true
-//     },
-//     (error, response, body) => {
-//       if (error) {
-//         callback("Unable to connect to forecast.io");
-//       } else if (response.statusCode === 404) {
-//         callback("Bad Coords");
-//       } else if (response.statusCode === 200) {
-//         callback(undefined, body);
-//       }
-//     }
-//   );
-// };
+// getWeather("43.1393867", "-80.2644254", "auto").then(result =>
+//   console.log(result)
+// );
 
-module.exports.getWeather = getWeather;
+const addTime = weather => {
+  weather.daily.data.map(obj => (obj.date = formattedTime()));
+  weather.date = formattedTime();
+  return weather;
+};
 
-//getWeather().then(result => console.log(result.currently, result.daily));
+module.exports = { getWeather, addTime };
