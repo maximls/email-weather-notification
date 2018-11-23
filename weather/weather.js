@@ -1,15 +1,15 @@
-//const request = require("request");
 const apiKey = require("./../config/config.json").keys.weatherkey;
 const fetch = require("node-fetch");
 
-const formattedTime = () => {
-  const date = new Date(Date.now());
-  // let day = date.getDate();
-  // let dayOfWeek = date.getDay();
-  // let month = date.getMonth();
-
-  return date.toString();
-  //return `${dayOfWeek}, ${month} ${day}`;
+const formattedTime = (time, timezone) => {
+  const date = new Date(time * 1000);
+  let options = {
+    timeZone: timezone,
+    hour12: true,
+    hour: "2-digit",
+    minute: "2-digit"
+  };
+  return date.toLocaleTimeString("en-ca", options);
 };
 
 const getWeather = async (latitude, longitude, units) => {
@@ -31,10 +31,30 @@ const getWeather = async (latitude, longitude, units) => {
 //   console.log(result)
 // );
 
-const addTime = weather => {
-  weather.daily.data.map(obj => (obj.date = formattedTime()));
-  weather.date = formattedTime();
+const roundTemps = temp => {
+  return Math.round(temp);
+};
+
+const formatWeather = weather => {
+  weather.daily.data.map(obj => {
+    obj.temperatureHigh = roundTemps(obj.temperatureHigh);
+    obj.temperatureLow = roundTemps(obj.temperatureLow);
+    obj.apparentTemperatureHigh = roundTemps(obj.apparentTemperatureHigh);
+    obj.apparentTemperatureLow = roundTemps(obj.apparentTemperatureLow);
+    obj.temperatureHighTime = formattedTime(
+      obj.temperatureHighTime,
+      weather.timezone
+    );
+    obj.temperatureLowTime = formattedTime(
+      obj.temperatureLowTime,
+      weather.timezone
+    );
+
+    obj.date = formattedTime();
+  });
+  weather.date = formattedTime(weather.currently.time, weather.timezone);
+  //TODO. Round the temperatures
   return weather;
 };
 
-module.exports = { getWeather, addTime };
+module.exports = { getWeather, formatWeather };

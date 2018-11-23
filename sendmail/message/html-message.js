@@ -1,4 +1,14 @@
-<!DOCTYPE html>
+// dynamic_template_data: {
+//   id,
+//   date: weatherData.date,
+//   currently: weatherData.currently,
+//   dailySummary: weatherData.daily.summary,
+//   dailyData: weatherData.daily.data[0],
+//   alerts: weatherData.alerts,
+//   location: location
+// }
+
+const htmlMessage = `<!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
@@ -6,19 +16,19 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Send Me My Weather</title>
+        <title>This is a test email</title>
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="">
     </head>
     <body>
+        <h1>This is HTML email</h1>
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
-        <h1>Weather to Email - isn't it cool?</h1>
-        {{> form}}
-
-        <img src="/assets/svg/Cloud-Fog-Alt.svg" />
+        
         <script src="" async defer></script>
     </body>
-</html>
+</html>`;
+
+module.exports = htmlMessage;
