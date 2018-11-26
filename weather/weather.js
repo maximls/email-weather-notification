@@ -1,5 +1,6 @@
 const apiKey = require("./../config/config.json").keys.weatherkey;
 const fetch = require("node-fetch");
+const logger = require("../config/logger");
 
 const formattedTime = (time, timezone) => {
   const date = new Date(time * 1000);
@@ -17,19 +18,22 @@ const getWeather = async (latitude, longitude, units) => {
     const weather = await fetch(
       `https://api.darksky.net/forecast/${apiKey}/${latitude},${longitude}?exclude=minutely,hourly,flags&units=${units}`
     );
-    if (weather.status !== 200) {
-      throw new Error("Could not connect to the server");
-    } else {
+    console.log(weather.status);
+    if (weather.status === 200) {
       return weather.json();
+    } else if (weather.status === 400) {
+      throw new Error("400 The given location is invalid");
+    } else if (weather.status === 403) {
+      throw new Error("403 Access forbidden. Check API key.");
+    } else {
+      throw new Error("DarkSky API/Server error.");
     }
   } catch (err) {
-    throw new Error("There was an error getting weather");
+    logger.error(err.message);
   }
 };
 
-// getWeather("43.1393867", "-80.2644254", "auto").then(result =>
-//   console.log(result)
-// );
+//getWeather("43.1393867", "-80.2644254", "auto").then(result => result);
 
 const roundTemps = temp => {
   return Math.round(temp);
@@ -53,7 +57,6 @@ const formatWeather = weather => {
     obj.date = formattedTime();
   });
   weather.date = formattedTime(weather.currently.time, weather.timezone);
-  //TODO. Round the temperatures
   return weather;
 };
 

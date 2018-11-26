@@ -8,7 +8,7 @@ const mailgun = require("mailgun-js")({ apiKey: api_key, domain: domain });
 const mail = data => {
   mailgun.messages().send(data, (error, body) => {
     if (error) return error; //ADD LOGGING - WINSTON
-    return body;
+    console.log(body);
   });
 };
 

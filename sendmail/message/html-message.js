@@ -8,7 +8,7 @@
 //   location: location
 // }
 
-const htmlMessage = `<!DOCTYPE html>
+const htmlMessage = weatherData => `<!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
@@ -22,7 +22,8 @@ const htmlMessage = `<!DOCTYPE html>
         <link rel="stylesheet" href="">
     </head>
     <body>
-        <h1>This is HTML email</h1>
+        <h1> ${weatherData.date}</h1>
+        <h2>${weatherData.daily.data[0].summary}</h2>
         <!--[if lt IE 7]>
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->

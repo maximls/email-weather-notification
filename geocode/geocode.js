@@ -2,6 +2,7 @@
 
 const fetch = require("node-fetch");
 const apiKey = require("./../config/config.json").keys.geokey;
+const logger = require("./config/logger");
 
 const getCoords = (location, country) => {
   const coords = fetch(
@@ -13,25 +14,25 @@ const getCoords = (location, country) => {
           if (Object.keys(result).length !== 0) {
             return result.json();
           } else {
-            throw new Error("No results found here");
+            throw new Error("Geocode API: No results found for this location");
           }
         case "ZERO_RESULTS":
-          throw new Error("No results found");
+          throw new Error("Geocode API: No results found");
 
         case "REQUEST_DENIED":
-          throw new Error("Request denied by Google API");
+          throw new Error("Geocode API: Request denied by Google API");
 
         case "INVALID_REQUEST":
-          throw new Error("Invalid request, check location");
+          throw new Error("Geocode API: Invalid request, check location");
 
         case "UKNOWN_ERROR":
-          throw new Error("Error, try again");
+          throw new Error("Geocode API: Error, try again");
 
         default:
-          throw new Error("ERROR!!");
+          throw new Error("Geocode API: undefined error");
       }
     })
-    .catch(err => console.log(err))
+    .catch(err => logger.error(err.message))
     .then(coords => {
       return (result = {
         address: coords.results[0].formatted_address,

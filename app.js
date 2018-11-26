@@ -5,6 +5,7 @@ const message = require("./sendmail/message/create-message");
 const mail = require("./sendmail/mailgun");
 const { User } = require("./models/user");
 const server = require("./server");
+const logger = require("./config/logger");
 
 //Start the server
 server;
@@ -15,11 +16,15 @@ cron.schedule(`* * * * *`, () => {
   console.log("Running ", new Date().getMinutes());
 });
 
+const now = () => {
+  const hours = new Date().getHours();
+  return hours.toString().length === 1 ? "0" + hours : hours;
+};
+
 const sendWeather = async () => {
   try {
-    let now = new Date().getHours();
     //Get a list of users
-    const users = await User.find({ time: `${now}:00` });
+    const users = await User.find({ time: `${now()}:00` });
     users.map(async user => {
       //Get weather data for each user
       const weatherData = await getWeather(
@@ -40,6 +45,7 @@ const sendWeather = async () => {
       mail(messageData);
     });
   } catch (err) {
+    logger.log.error(err);
     throw new Error(`ERROR: ${err}`);
   }
 };

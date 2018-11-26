@@ -10,7 +10,7 @@ const createMessage = (weatherData, location, email, id) => {
         ? weatherData.alerts[0].title
         : weatherData.daily.summary
     }`,
-    html: htmlMessage,
+    html: htmlMessage(weatherData),
     text: "testing from the app"
   };
 
