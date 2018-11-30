@@ -1,75 +1,59 @@
 //const request = require("request");
-
+"use strict";
 const fetch = require("node-fetch");
 const apiKey = require("./../config/config.json").keys.geokey;
-const logger = require("./config/logger");
+const logger = require("../config/logger");
 
-const getCoords = (location, country) => {
-  const coords = fetch(
-    `https://maps.googleapis.com/maps/api/geocode/json?components=locality:${location}|country:${country}&key=${apiKey}`
-  )
-    .then(result => {
-      switch (result.status) {
-        case 200:
-          if (Object.keys(result).length !== 0) {
-            return result.json();
-          } else {
-            throw new Error("Geocode API: No results found for this location");
-          }
-        case "ZERO_RESULTS":
-          throw new Error("Geocode API: No results found");
+const getCoords = async (location, country) => {
+  try {
+    let finalCoords = {};
 
-        case "REQUEST_DENIED":
-          throw new Error("Geocode API: Request denied by Google API");
+    const coords = await fetch(
+      `https://maps.googleapis.com/maps/api/geocode/json?components=locality:${location}|country:${country}&key=${apiKey}`
+    ).then(result => result.json());
 
-        case "INVALID_REQUEST":
-          throw new Error("Geocode API: Invalid request, check location");
+    const checkCoords = result => {
+      if (Object.keys(result.results).length !== 0) {
+        return result;
+      } else {
+        switch (result.status) {
+          case "ZERO_RESULTS":
+            throw new Error("Geocode API: No results found");
 
-        case "UKNOWN_ERROR":
-          throw new Error("Geocode API: Error, try again");
+          case "REQUEST_DENIED":
+            console.log("request denied!");
+            throw new Error("Geocode API: Request denied by Google API");
 
-        default:
-          throw new Error("Geocode API: undefined error");
+          case "INVALID_REQUEST":
+            throw new Error("Geocode API: Invalid request, check location");
+
+          case "UKNOWN_ERROR":
+            throw new Error("Geocode API: Error, try again");
+
+          default:
+            throw new Error("Geocode API: undefined error");
+        }
       }
-    })
-    .catch(err => logger.error(err.message))
-    .then(coords => {
-      return (result = {
+    };
+
+    const formatCoords = coords => {
+      finalCoords = {
         address: coords.results[0].formatted_address,
         latitude: coords.results[0].geometry.location.lat,
         longitude: coords.results[0].geometry.location.lng
-      });
-    });
+      };
+    };
 
-  return coords;
+    formatCoords(checkCoords(coords));
+
+    return finalCoords;
+  } catch (err) {
+    logger.error(err.message);
+  }
 };
 
-// const getCoords = (address, callback) => {
-//   request(
-//     {
-//       url: `https://maps.googleapis.com/maps/api/geocode/json?address=${address}&key=${
-//         apiKey.geokey
-//       }`,
-//       json: true
-//     },
-//     (error, response, body) => {
-//       if (error) {
-//         callback("Unable to connect");
-//       } else if (
-//         body.status == "INVALID_REQUEST" ||
-//         body.status == "ZERO_RESULTS"
-//       ) {
-//         callback("Invalid address");
-//       } else {
-//         let result = {
-//           address: body.results[0].formatted_address,
-//           latitude: body.results[0].geometry.location.lat,
-//           longitude: body.results[0].geometry.location.lng
-//         };
-//         callback(undefined, result);
-//       }
-//     }
-//   );
-// };
-
 module.exports.getCoords = getCoords;
+
+// getCoords("Brantford", "ca")
+//   .then(result => console.log(result))
+//   .catch(err => console.log(err));

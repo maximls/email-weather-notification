@@ -29,12 +29,12 @@
         "sunriseTime": 1542201272,
         "sunsetTime": 1542237366,
         "moonPhase": 0.23,
-        "precipIntensity": 0.0051,
-        "precipIntensityMax": 0.0483,
+        "precipIntensity": 0.0051, //The intensity (in inches of liquid water per hour) of precipitation occurring at the given time. This value is conditional on probability (that is, assuming any precipitation occurs at all).
+        "precipIntensityMax": 0.0483, //The maximum value of precipIntensity during a given day.
         "precipIntensityMaxTime": 1542243600,
-        "precipProbability": 0.1,
-        "precipAccumulation": 0.069,
-        "precipType": "snow",
+        "precipProbability": 0.1, //The probability of precipitation occurring, between 0 and 1, inclusive. (eg 10% chance of rain )
+        "precipAccumulation": 0.069, //The amount of snowfall accumulation expected to occur, in inches. (If no snowfall is expected, this property will not be defined.)
+        "precipType": "snow", //The type of precipitation occurring at the given time. If defined, this property will have one of the following values: "rain", "snow", or "sleet"
         "temperatureHigh": 7.64,
         "temperatureHighTime": 1542225600,
         "temperatureLow": -3.8,
@@ -46,8 +46,8 @@
         "dewPoint": -4.84,
         "humidity": 0.72,
         "pressure": 1029.62,
-        "windSpeed": 9.67,
-        "windGust": 32.57,
+        "windSpeed": 9.67, //The wind speed in miles per hour.
+        "windGust": 32.57, //The wind gust speed in miles per hour.
         "windGustTime": 1542254400,
         "windBearing": 177,
         "cloudCover": 0,

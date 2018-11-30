@@ -1,14 +1,4 @@
-// dynamic_template_data: {
-//   id,
-//   date: weatherData.date,
-//   currently: weatherData.currently,
-//   dailySummary: weatherData.daily.summary,
-//   dailyData: weatherData.daily.data[0],
-//   alerts: weatherData.alerts,
-//   location: location
-// }
-
-const htmlMessage = weatherData => `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
@@ -16,15 +6,15 @@ const htmlMessage = weatherData => `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01
         <style type="text/css">
                 @import url('https://fonts.googleapis.com/css?family=Lato:400,700');
 				body {font-family: 'Lato', Arial, sans-serif; font-size: 16px;}
-                .container {border: 1px solid blue}
+                .container {border: 1px solid lightgrey}
                 .logo{width: 50% }
 				.summary {font-size: 18px; font-weight: 400; font-family: 'Lato', Arial, sans-serif; padding: 5px 20px}
 				.temps-row td {padding-top: 40px}
 				.temps { text-align: center;  width: 100%}
 				.temps td{padding: 10px 0px; color: white; }
 				.temps tr:nth-of-type(2){font-size: 22px}
-				.high {background-color: hsl(24, 69%, 55%) ; text-shadow: hsl(216, 66%, 66%) 1px 1px 3px}
-				.low {background-color: hsl(216, 66%, 66%); text-shadow: hsl(24, 69%, 55%) 1px 1px 3px}
+				.high {background-color: hsl(24, 69%, 55%)  }
+				.low {background-color: hsl(216, 66%, 66%)}
 
 		</style>
 	</head>	
@@ -83,6 +73,3 @@ const htmlMessage = weatherData => `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01
 
 	</body>	
 </html>
-`;
-
-module.exports = htmlMessage;

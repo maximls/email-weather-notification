@@ -1,3 +1,4 @@
+"use strict";
 require("./config/config");
 const { getWeather, formatWeather } = require("./weather/weather");
 const cron = require("node-cron");

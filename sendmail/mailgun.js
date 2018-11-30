@@ -1,3 +1,4 @@
+"use strict";
 require("../config/config");
 
 const api_key = process.env.MAILGUN_API_KEY;

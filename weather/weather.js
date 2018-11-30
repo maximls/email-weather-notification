@@ -1,3 +1,4 @@
+"use strict";
 const apiKey = require("./../config/config.json").keys.weatherkey;
 const fetch = require("node-fetch");
 const logger = require("../config/logger");
