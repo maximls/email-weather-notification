@@ -7,7 +7,7 @@ const { ObjectID } = require("mongodb");
 const { User } = require("./models/user");
 const geocode = require("./geocode/geocode");
 var hbs = require("hbs");
-const port = process.env.PORT;
+const port = 3000;
 
 const app = express();
 hbs.registerPartials(__dirname + "/views/partials/");

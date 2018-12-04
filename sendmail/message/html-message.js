@@ -62,8 +62,8 @@ const htmlMessage = weatherData => `<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01
 								</tr>
 							</table>
 						</td>
-						<td align="center">
-							<table class="temps low">
+						<td align="center" bgcolor="#cccccc">
+							<table class="temps" >
 								<tr>
 									<td>6:00 PM</td>	
 								</tr>
