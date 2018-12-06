@@ -27,6 +27,7 @@ app.post("/", (req, res) => {
   geocode
     .getCoords(req.body.location, req.body.country)
     .then(result => {
+      let units = req.body.country === "United+States" ? "us" : "ca";
       const user = new User({
         email: req.body.email,
         location: result.address,
@@ -34,7 +35,7 @@ app.post("/", (req, res) => {
         latitude: result.latitude,
         longitude: result.longitude,
         time: req.body.time,
-        units: req.body.units
+        units
       });
       return user;
     })

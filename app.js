@@ -34,7 +34,7 @@ const sendWeather = async () => {
         user.units
       );
       //Format weather response
-      const weatherWithDate = await formatWeather(weatherData);
+      const weatherWithDate = await formatWeather(weatherData, user.units);
       //Create email message
       const messageData = message.createMessage(
         weatherWithDate,

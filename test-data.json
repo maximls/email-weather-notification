@@ -36,7 +36,7 @@
         "precipAccumulation": 0.069, //The amount of snowfall accumulation expected to occur, in inches. (If no snowfall is expected, this property will not be defined.)
         "precipType": "snow", //The type of precipitation occurring at the given time. If defined, this property will have one of the following values: "rain", "snow", or "sleet"
         "temperatureHigh": 7.64,
-        "temperatureHighTime": 1542225600,
+        "temperatureHigh": 1542225600,
         "temperatureLow": -3.8,
         "temperatureLowTime": 1542283200,
         "apparentTemperatureHigh": 4.69,
