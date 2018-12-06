@@ -39,8 +39,17 @@ function round(value, decimals) {
   return Number(Math.round(value + "e" + decimals) + "e-" + decimals);
 }
 
+function capitalize(string) {
+  if (string) {
+    return string.replace(/^./, string.split("")[0].toUpperCase());
+  } else {
+    return string;
+  }
+}
+
 const formatWeather = (weather, units) => {
   weather.daily.data.map(obj => {
+    //console.log(typeof obj.precipType);
     obj.temperatureHigh = Math.round(obj.temperatureHigh);
     obj.temperatureLow = Math.round(obj.temperatureLow);
     obj.apparentTemperatureHigh = Math.round(obj.apparentTemperatureHigh);
@@ -53,6 +62,7 @@ const formatWeather = (weather, units) => {
       obj.temperatureLowTime,
       weather.timezone
     );
+    obj.precipType = capitalize(obj.precipType);
     obj.precipAccumulation = (function(value) {
       return value !== "undefined" ? round(value, 1) : "undefined"; // precipAccumulation can be returned as undefined from the server and will break round function.
     })(obj.precipAccumulation);
