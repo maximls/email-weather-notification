@@ -12,7 +12,7 @@ const logger = require("./config/logger");
 server;
 
 //Schedule to run every (hour)
-cron.schedule(`* * * * *`, () => {
+module.exports = cron.schedule(`* * * * *`, () => {
   sendWeather();
   console.log("Running ", new Date().getMinutes());
 });

@@ -6,8 +6,11 @@ const { mongoose } = require("./db/mongoose");
 const { ObjectID } = require("mongodb");
 const { User } = require("./models/user");
 const geocode = require("./geocode/geocode");
-var hbs = require("hbs");
+const weather = require("./app");
+const hbs = require("hbs");
 const port = 3000;
+
+weather;
 
 const app = express();
 hbs.registerPartials(__dirname + "/views/partials/");
@@ -136,6 +139,10 @@ app.get("/delete/:id", (req, res) => {
 //     .catch(err => res.status(400).send(err));
 // });
 
-module.exports = app.listen(port, () => {
+// module.exports = app.listen(port, () => {
+//   console.log(`server running on port ${port}`);
+// });
+
+app.listen(port, () => {
   console.log(`server running on port ${port}`);
 });

@@ -36,7 +36,7 @@ const htmlMessage = (
 							</td>
 						</tr>
 						<tr>
-                            <td colspan="2" align="center"><img style="width: 70%" src="../../public/assets/SVG/${
+                            <td colspan="2" align="center"><img style="width: 70%" src="http://www.emailweather.info/assets/icons/${
                               weatherData.daily.data[0].icon
                             }.svg"></td>
 						</tr>
@@ -104,8 +104,8 @@ const htmlMessage = (
 } ${weatherData.labels.windSpeed()}</td>
 						</tr>
 						<tr>
-							<td colspan="1" align="center" style="padding-bottom:20px"><a style="color:#1b89ef" href="https://emailweather.info/update/${id}">Update preferences</a></td>
-							<td colspan="2" align="center" style="padding-bottom:20px"><a style="color:#1b89ef" href="https://emailweather.info/delete/${id}">Unsubscribe</a></td>
+							<td colspan="1" align="center" style="padding-bottom:20px"><a style="color:#1b89ef" href="http://www.emailweather.info/update/${id}">Update preferences</a></td>
+							<td colspan="2" align="center" style="padding-bottom:20px"><a style="color:#1b89ef" href="http://www.emailweather.info/delete/${id}">Unsubscribe</a></td>
 						</tr>
 						<tr>
 							<td calign="center" style="font-size:14px" colspan="2"> All Rights Reserved</td>
