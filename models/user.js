@@ -29,6 +29,10 @@ var UserSchema = new mongoose.Schema({
     required: true,
     minlength: 2
   },
+  timezone: {
+    type: String,
+    required: true
+  },
   units: {
     type: String,
     required: true,
