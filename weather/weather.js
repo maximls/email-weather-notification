@@ -14,11 +14,20 @@ const formatTime = (time, timezone) => {
   return date.toLocaleTimeString("en-ca", options);
 };
 
-const getWeather = async (latitude, longitude, units) => {
+const getRawWeather = async (latitude, longitude, units) => {
   try {
-    const weather = await fetch(
+    const rawWeather = await fetch(
       `https://api.darksky.net/forecast/${apiKey}/${latitude},${longitude}?exclude=minutely,hourly,flags&units=${units}`
     );
+    return rawWeather;
+  } catch (err) {
+    return err;
+  }
+};
+
+const getWeather = async (latitude, longitude, units) => {
+  try {
+    const weather = await getRawWeather(latitude, longitude, units);
     if (weather.status === 200) {
       return weather.json();
     } else if (weather.status === 400) {
@@ -85,4 +94,4 @@ const formatWeather = (weather, units) => {
   return weather;
 };
 
-module.exports = { getWeather, formatWeather };
+module.exports = { getWeather, formatWeather, getRawWeather };

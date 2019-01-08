@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
+mongoose.set("debug", true);
 
 var UserSchema = new mongoose.Schema({
   email: {
@@ -24,14 +25,21 @@ var UserSchema = new mongoose.Schema({
   longitude: {
     type: String
   },
-  time: {
+  userTime: {
     type: String,
     required: true,
     minlength: 2
   },
-  timezone: {
+  utcTime: {
     type: String,
     required: true
+  },
+  utcTime_dst: {
+    type: String
+  },
+  timezone: {
+    type: Object,
+    required: false
   },
   units: {
     type: String,

@@ -38,7 +38,7 @@ const htmlMessage = (
 						<tr>
                             <td colspan="2" align="center"><img style="width: 70%" src="http://www.emailweather.info/assets/icons/${
                               weatherData.daily.data[0].icon
-                            }.svg"></td>
+                            }.png"></td>
 						</tr>
 						<tr>
 							<td colspan="2" align="center" class="summary">${
@@ -88,7 +88,8 @@ const htmlMessage = (
 						</tr>
 						<tr>
 							<td colspan="2" align="center" style="font-size:18px; padding-top:15px; padding-bottom:15px"> ${
-                weatherData.daily.data[0].precipAccumulation !== "undefined"
+                weatherData.daily.data[0].precipAccumulation !== "undefined" ||
+                weatherData.daily.data[0].precipAccumulation !== NaN
                   ? `Accumulation: 
                     ${
                       weatherData.daily.data[0].precipAccumulation

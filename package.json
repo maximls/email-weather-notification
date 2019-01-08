@@ -16,7 +16,7 @@
     "logform": "^1.10.0",
     "mailgun-js": "^0.22.0",
     "mongodb": "^3.0.0",
-    "mongoose": "^5.3.5",
+    "mongoose": "^5.4.2",
     "node-cron": "^2.0.3",
     "node-fetch": "^2.2.1",
     "request": "^2.88.0",

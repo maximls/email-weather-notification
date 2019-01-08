@@ -10,6 +10,7 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="">
+  
     </head>
     <body>
         <!--[if lt IE 7]>
@@ -20,5 +21,14 @@
 
         <img src="/assets/svg/Cloud-Fog-Alt.svg" />
         <script src="" async defer></script>
+        <script>
+            const timestamp = new Date();
+            const getForm = document.querySelector('form');
+            const formTimestamp = document.createElement("input");
+                formTimestamp.setAttribute('name', 'timestamp');
+                formTimestamp.setAttribute('value', timestamp);
+                formTimestamp.setAttribute('type', 'hidden')
+            getForm.appendChild(formTimestamp)
+        </script>
     </body>
 </html>
