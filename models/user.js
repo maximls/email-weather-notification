@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const validator = require("validator");
-mongoose.set("debug", true);
+//mongoose.set("debug", true);
 
 var UserSchema = new mongoose.Schema({
   email: {

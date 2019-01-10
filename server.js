@@ -9,10 +9,11 @@ const geocode = require("./geocode/geocode");
 const time = require("./timezone/timezone");
 const { sendCron, updateCron } = require("./app");
 const { getRawWeather } = require("./weather/weather");
+const { validateRecaptcha } = require("./captcha/captcha");
 const hbs = require("hbs");
 const port = 3000;
 
-updateCron; //Check for DST at 03:00 UTC
+updateCron; //Check for DST at 03:00 UTC daily
 sendCron; // Send emails
 
 const app = express();
@@ -31,6 +32,13 @@ app.get("/", (req, res) => {
 
 app.post("/", async (req, res) => {
   try {
+    console.log(req.body);
+    //Validate form captcha
+    const captcha = await validateRecaptcha(req.body);
+    if (captcha !== 200) {
+      throw new Error("Invalid captcha");
+    }
+    //Get lat/long coordinates from Google
     const result = await geocode.getCoords(req.body.location, req.body.country);
 
     //Check that the weather data is available for the location entered.
@@ -39,6 +47,10 @@ app.post("/", async (req, res) => {
       result.longitude,
       "auto"
     );
+
+    if (checkWeather.status !== 200) {
+      throw new Error("No weather data available for your location");
+    }
 
     //Get timezone for the location entered.
     const timezone = await time.getTimeZone(
@@ -49,7 +61,9 @@ app.post("/", async (req, res) => {
     //Convert entered location's timezone to UTC
     const utcTime = await time.convertToUTC(req.body.time, timezone.rawOffset);
 
+    //Use imperial units for United States, metric for all other countries
     const units = req.body.country === "United+States" ? "us" : "ca";
+
     //Create a new user
     const user = new User({
       email: req.body.email,
@@ -64,12 +78,7 @@ app.post("/", async (req, res) => {
       units
     });
 
-    //Only save users when weather data is available
-    if (checkWeather.status == 200) {
-      user.save();
-    } else {
-      throw new Error("Weather data is not available for this location");
-    }
+    await user.save();
 
     res.status(200).render("success.hbs", {
       id: user._id,
@@ -80,13 +89,9 @@ app.post("/", async (req, res) => {
     });
   } catch (err) {
     if (err.code == 11000) {
-      res.status(400).send("Your email has already been used to sign up");
+      res.status(400).send(`Your email has already been used to sign up`);
     } else {
-      res
-        .status(400)
-        .send(
-          "There was an error creating a user. Please confirm all fields are filled in properly"
-        );
+      res.status(400).send(`${err}, ${err.code}`);
     }
   }
 });
