@@ -1,5 +1,5 @@
 "use strict";
-const secretKey = "6LeNSYgUAAAAAPDTe2LBCCLiYPf4JlMlS22vYyPU";
+const secretKey = require("./../config/config.json").keys.captchakey;
 const fetch = require("node-fetch");
 
 const validateRecaptcha = async requestBody => {

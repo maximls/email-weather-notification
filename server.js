@@ -1,4 +1,5 @@
 "use strict";
+
 require("./config/config");
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -17,26 +18,49 @@ updateCron; //Check for DST at 03:00 UTC daily
 sendCron; // Send emails
 
 const app = express();
-hbs.registerPartials(__dirname + "/views/partials/");
 app.set("view engine", "hbs");
+hbs.registerPartials(__dirname + "/views/partials/", () => {
+  console.log("Registered Partials");
+});
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
+app.use((req, res, next) => {
+  if (!req.secure && process.env.NODE_ENV === "production") {
+    var secureUrl = "https://" + req.headers["host"] + req.url;
+    res.writeHead(301, { Location: secureUrl });
+    res.end();
+  }
+  next();
+});
+
+const httpHeaders = {
+  "x-powered-by": "myserver",
+  "Content-Security-Policy":
+    "script-src  'self' 'unsafe-inline' https://www.googletagmanager.com https://www.google.com https://www.gstatic.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;",
+  "X-Frame-Options": "deny",
+  "X-XXS-Protection": "1; mode=block"
+};
 
 app.get("/", (req, res) => {
-  res.status(200).render("index.hbs", {
-    method: "post",
-    action: ""
-  });
+  res
+    .status(200)
+    .set(httpHeaders)
+    .render("index.hbs", {
+      method: "post",
+      action: ""
+    });
 });
 
 app.post("/", async (req, res) => {
+  let user = {}; //Declare user object here in order to use it in catch block
   try {
-    console.log(req.body);
     //Validate form captcha
-    const captcha = await validateRecaptcha(req.body);
-    if (captcha !== 200) {
-      throw new Error("Invalid captcha");
+    if (process.env.NODE_ENV != "test") {
+      const captcha = await validateRecaptcha(req.body);
+      if (captcha !== 200) {
+        throw new Error("Invalid captcha");
+      }
     }
     //Get lat/long coordinates from Google
     const result = await geocode.getCoords(req.body.location, req.body.country);
@@ -65,9 +89,10 @@ app.post("/", async (req, res) => {
     const units = req.body.country === "United+States" ? "us" : "ca";
 
     //Create a new user
-    const user = new User({
+    user = new User({
       email: req.body.email,
-      location: result.address,
+      address: result.address,
+      location: req.body.location,
       country: req.body.country,
       latitude: result.latitude,
       longitude: result.longitude,
@@ -78,20 +103,27 @@ app.post("/", async (req, res) => {
       units
     });
 
-    await user.save();
+    await user.save(); //Save user to database
 
-    res.status(200).render("success.hbs", {
-      id: user._id,
-      location: user.location,
-      email: user.email,
-      timezone: timezone,
-      timestamp: req.body.timestamp
-    });
+    res
+      .status(200)
+      .set(httpHeaders)
+      .render("success.hbs", {
+        message: `Success! You will receive daily emails with weather forecast for ${
+          user.location
+        } at ${user.email}`,
+        id: user._id,
+        timestamp: req.body.timestamp
+      });
   } catch (err) {
     if (err.code == 11000) {
-      res.status(400).send(`Your email has already been used to sign up`);
+      res.status(400).render("error.hbs", {
+        message: `Looks like ${
+          user.email
+        } has already been used. Please try a different address.`
+      });
     } else {
-      res.status(400).send(`${err}, ${err.code}`);
+      res.status(400).render("error.hbs", { message: `${err}, ${err.code}` });
     }
   }
 });
@@ -108,27 +140,35 @@ app.post("/location/:location&:country", (req, res) => {
 app.get("/update/:id", (req, res) => {
   const id = req.params.id;
   if (!ObjectID.isValid(id)) {
-    res.status(404).send("Invalid ID");
+    res.status(404).render("error.hbs", {
+      message: `Invalid user ID.`
+    });
   }
   User.findById({ _id: id })
     .then(fields => {
-      res.status(200).render("update.hbs", {
-        method: "post",
-        action: "/update",
-        param: id,
-        email: fields.email,
-        location: fields.location,
-        time: fields.time,
-        units: fields.units
-      });
+      res
+        .status(200)
+        .set(httpHeaders)
+        .render("update.hbs", {
+          method: "post",
+          action: "/update",
+          param: id,
+          email: fields.email,
+          location: fields.location,
+          country: fields.country,
+          time: fields.time,
+          units: fields.units
+        });
     })
-    .catch(err => res.status(400).send("Cannot find user"));
+    .catch(err => res.status(400).render("error.hbs", { message: err }));
 });
 
 app.post("/update/:id", (req, res) => {
   const id = req.params.id;
   if (!ObjectID.isValid(id)) {
-    res.status(404).send("Invalid ID");
+    res.status(404).render("error.hbs", {
+      message: `Invalid user ID.`
+    });
   }
   User.findByIdAndUpdate(
     { _id: id },
@@ -142,11 +182,26 @@ app.post("/update/:id", (req, res) => {
   )
     .then(user => {
       if (!user) {
-        return res.status(404).send();
+        return res.status(404).render("error.hbs", {
+          message: `Invalid user ID.`
+        });
       }
-      res.status(200).send({ user });
+      res
+        .status(200)
+        .set(httpHeaders)
+        .render("success.hbs", {
+          message: `Information updated. You will receive daily emails with weather forecast for ${
+            user.location
+          } at ${user.email}`,
+          id: user._id,
+          timestamp: req.body.timestamp
+        });
     })
-    .catch(err => res.status(400).send());
+    .catch(err =>
+      res.status(400).render("error.hbs", {
+        message: `${err}`
+      })
+    );
 });
 
 app.get("/delete/:id", (req, res) => {
@@ -157,7 +212,9 @@ app.get("/delete/:id", (req, res) => {
   User.findByIdAndDelete({ _id: id })
     .then(user => {
       res.status(200).render("delete.hbs", {
-        email: user.email
+        message: `We are sad to see you go. Your email ${
+          user.email
+        } has been unsubscribed.`
       });
     })
     .catch(err => res.status(400).send(err));
@@ -166,3 +223,5 @@ app.get("/delete/:id", (req, res) => {
 app.listen(port, () => {
   console.log(`server running on port ${port}`);
 });
+
+//module.exports.app = app;

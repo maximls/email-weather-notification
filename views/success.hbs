@@ -1,13 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>{{pageTitle}}</title>
-</head>
-<body>
-    <h1>Success! You will receive weather information for {{location}} at {{email}}. Your timezone is: {{timezone}}. Timestamp: {{timestamp}}</h1>
-    <h2>Wrong location?<a href="/update/{{id}}"> Update</a> your info now</h2>
-</body>
-</html>
+{{> header}}
+<div class="success"></div>
+{{> message}}
+<h2 class="update-link">Wrong location?<a href="/update/{{id}}"> Update </a> your info now</h2>
+{{> footer}}

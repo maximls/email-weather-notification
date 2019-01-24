@@ -3,17 +3,7 @@ const apiKey = require("./../config/config.json").keys.weatherkey;
 const fetch = require("node-fetch");
 const logger = require("../config/logger");
 
-const formatTime = (time, timezone) => {
-  const date = new Date(time * 1000);
-  let options = {
-    timeZone: timezone,
-    hour12: true,
-    hour: "2-digit",
-    minute: "2-digit"
-  };
-  return date.toLocaleTimeString("en-ca", options);
-};
-
+//Get weather from Darksky api
 const getRawWeather = async (latitude, longitude, units) => {
   try {
     const rawWeather = await fetch(
@@ -25,6 +15,7 @@ const getRawWeather = async (latitude, longitude, units) => {
   }
 };
 
+//Convert weather to JSON
 const getWeather = async (latitude, longitude, units) => {
   try {
     const weather = await getRawWeather(latitude, longitude, units);
@@ -42,23 +33,9 @@ const getWeather = async (latitude, longitude, units) => {
   }
 };
 
-//getWeather("43.1393867", "-80.2644254", "auto").then(result => result);
-
-function round(value, decimals) {
-  return Number(Math.round(value + "e" + decimals) + "e-" + decimals);
-}
-
-function capitalize(string) {
-  if (string) {
-    return string.replace(/^./, string.split("")[0].toUpperCase());
-  } else {
-    return string;
-  }
-}
-
+//Format weather object for use in email message
 const formatWeather = (weather, units) => {
   weather.daily.data.map(obj => {
-    //console.log(typeof obj.precipType);
     obj.temperatureHigh = Math.round(obj.temperatureHigh);
     obj.temperatureLow = Math.round(obj.temperatureLow);
     obj.apparentTemperatureHigh = Math.round(obj.apparentTemperatureHigh);
@@ -93,5 +70,30 @@ const formatWeather = (weather, units) => {
   weather.time = formatTime(weather.currently.time, weather.timezone);
   return weather;
 };
+
+//********************Utility functions for formatWeather()**************************/
+
+const formatTime = (time, timezone) => {
+  const date = new Date(time * 1000);
+  let options = {
+    timeZone: timezone,
+    hour12: true,
+    hour: "2-digit",
+    minute: "2-digit"
+  };
+  return date.toLocaleTimeString("en-ca", options);
+};
+
+function round(value, decimals) {
+  return Number(Math.round(value + "e" + decimals) + "e-" + decimals);
+}
+
+function capitalize(string) {
+  if (string) {
+    return string.replace(/^./, string.split("")[0].toUpperCase());
+  } else {
+    return string;
+  }
+}
 
 module.exports = { getWeather, formatWeather, getRawWeather };

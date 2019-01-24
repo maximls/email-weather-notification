@@ -1,11 +1,10 @@
-//A function to get user's timezone and convert the time to UTC before storing to user's record
-
 "use strict";
 
 const fetch = require("node-fetch");
 const apiKey = require("./../config/config.json").keys.geokey;
 const logger = require("../config/logger");
 
+//A function to get user's timezone and convert the time to UTC before storing to user's record
 const getTimeZone = async (locationCoords, time) => {
   try {
     const timezone = await fetch(
@@ -54,6 +53,7 @@ const getTimeZone = async (locationCoords, time) => {
   }
 };
 
+//Keep the hours within 24 hours
 const rolloverHours = (hours, offset) => {
   let convertedHours = 0;
 
@@ -74,9 +74,5 @@ const convertToUTC = (time, rawOffset) => {
   const hours = Number.parseInt(timeArr[0], 10);
   return rolloverHours(hours, offset);
 };
-
-// getTimeZone("43.1393867,-80.2644254", 1331161200).then(result =>
-//   console.log(convertToUTCwithDST(result))
-// );
 
 module.exports = { getTimeZone, convertToUTC, rolloverHours };

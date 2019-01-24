@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Weather by Email</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="../assets/css/style.css">
+        <script src="../assets/js/jquery-1.11.1.min.js"></script>
+        <script src="../assets/js/jquery-ui.min.js"></script>
+        <script src="../assets/js/jquery.select-to-autocomplete.js"></script>
+        <link href="https://fonts.googleapis.com/css?family=Ubuntu+Condensed" rel="stylesheet"> 
+        <!-- Global site tag (gtag.js) - Google Analytics -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=UA-105256493-6"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'UA-105256493-6');
+        </script>
+
+        <script>
+        (function($){
+            $(function(){
+            $('select').selectToAutocomplete();
+            });
+        })(jQuery);
+        </script>
+        <link rel="stylesheet" href="assets/css/jquery-ui.css">
+        <style>
+    
+        .ui-autocomplete {
+        padding: 0;
+        list-style: none;
+        background-color: #fff;
+        width: 218px;
+        border: 1px solid #B0BECA;
+        max-height: 350px;
+        overflow-x: hidden;
+        }
+        .ui-autocomplete .ui-menu-item {
+        border-top: 1px solid #B0BECA;
+        display: block;
+        padding: 4px 6px;
+        color: #353D44;
+        cursor: pointer;
+        }
+        .ui-autocomplete .ui-menu-item:first-child {
+        border-top: none;
+        }
+        .ui-autocomplete .ui-menu-item.ui-state-focus {
+        background-color: #D5E5F4;
+        color: #161A1C;
+        }
+        </style>
+    </head>
+    <body>
+        <header><h1>Get daily emails with weather summary by the time you wake up</h1></header>
+        <main>
+            {{> icons}}

@@ -1,18 +1,17 @@
 "use strict";
-//PROCESS DATA & COMPOSE EMAIL MESSAGE
 const htmlMessage = require("./html-message.js");
 
+//Proccess data and create html message
 const createMessage = (weatherData, location, email, id) => {
   const message = {
-    to: email, //"maxim.lysakovsky@gmail.com",
+    to: email,
     from: "weather@emailweather.info",
     subject: ` ${
       weatherData.alerts
         ? weatherData.alerts[0].title
         : weatherData.daily.data[0].summary
     }`,
-    html: htmlMessage(weatherData, location, id),
-    text: "testing from the app"
+    html: htmlMessage(weatherData, location, id)
   };
 
   return message;

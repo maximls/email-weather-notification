@@ -1,9 +1,9 @@
-//const request = require("request");
 "use strict";
 const fetch = require("node-fetch");
 const apiKey = require("./../config/config.json").keys.geokey;
 const logger = require("../config/logger");
 
+//Convert user's address to lat/long coordinates to request weather data
 const getCoords = async (location, country) => {
   try {
     let finalCoords = {};
@@ -53,7 +53,3 @@ const getCoords = async (location, country) => {
 };
 
 module.exports.getCoords = getCoords;
-
-// getCoords("Brantford", "ca")
-//   .then(result => console.log(result))
-//   .catch(err => console.log(err));

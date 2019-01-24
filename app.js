@@ -5,7 +5,6 @@ const cron = require("node-cron");
 const message = require("./sendmail/message/create-message");
 const mail = require("./sendmail/mailgun");
 const { User } = require("./models/user");
-const server = require("./server");
 const logger = require("./config/logger");
 const {
   getTimeZone,
@@ -13,19 +12,15 @@ const {
   rolloverHours
 } = require("./timezone/timezone");
 
-//Start the server
-//server;
-
 //Schedule to run every (hour)
-const sendCron = cron.schedule(`* * * * *`, () => {
-  sendWeather();
+const sendCron = cron.schedule(`0 * * * *`, () => {
+  sendWeather(); //Send email
   console.log("Running ", new Date().getMinutes());
 });
 
 //Schedule to run every day at 03:00 UTC
 const updateCron = cron.schedule(`* 3 * * *`, () => {
-  console.log("Updating dst....");
-  updateDSToffset();
+  updateDSToffset(); //Check and update DST
 });
 
 const now = () => {
@@ -64,7 +59,7 @@ const sendWeather = async () => {
 };
 
 // Function to run at specific times to check if DST offset is required and if so, update utcTime_dst value, if DST is no longer required, roll back to original UTC time.
-// TODO: figure out why User.find wasn't working in timezone.js file.
+
 const updateDSToffset = async () => {
   try {
     const users = await User.find({}); //Get all users
