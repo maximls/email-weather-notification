@@ -1,4 +1,4 @@
-# my-weather-notification
+# email-weather-notification
 An app that sends an email with daily weather summary for a location
 
 This app uses following API providers: 
