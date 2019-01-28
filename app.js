@@ -13,9 +13,9 @@ const {
 } = require("./timezone/timezone");
 
 //Schedule to run every (hour)
-const sendCron = cron.schedule(`0 * * * *`, () => {
+const sendCron = cron.schedule(`* * * * *`, () => {
   sendWeather(); //Send email
-  console.log("Running ", new Date().getMinutes());
+  console.log("Running ", new Date().getHours());
 });
 
 //Schedule to run every day at 03:00 UTC
@@ -42,13 +42,15 @@ const sendWeather = async () => {
       );
       //Format weather response
       const weatherWithDate = await formatWeather(weatherData, user.units);
+      //console.log(weatherWithDate);
       //Create email message
       const messageData = message.createMessage(
         weatherWithDate,
-        user.location,
+        user.address,
         user.email,
         user._id
       );
+      //console.log(messageData);
       //Send email
       mail(messageData);
     });

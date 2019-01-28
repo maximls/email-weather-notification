@@ -1,5 +1,5 @@
 "use strict";
-
+require("dotenv").config({ path: "./dev.env" }); //if the dev.env is absent from the directory the application will assume it's running in production
 require("./config/config");
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -13,15 +13,12 @@ const { getRawWeather } = require("./weather/weather");
 const { validateRecaptcha } = require("./captcha/captcha");
 const hbs = require("hbs");
 const port = 3000;
-
 updateCron; //Check for DST at 03:00 UTC daily
 sendCron; // Send emails
 
 const app = express();
 app.set("view engine", "hbs");
-hbs.registerPartials(__dirname + "/views/partials/", () => {
-  console.log("Registered Partials");
-});
+hbs.registerPartials(__dirname + "/views/partials/");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
@@ -110,7 +107,7 @@ app.post("/", async (req, res) => {
       .set(httpHeaders)
       .render("success.hbs", {
         message: `Success! You will receive daily emails with weather forecast for ${
-          user.location
+          user.address
         } at ${user.email}`,
         id: user._id,
         timestamp: req.body.timestamp

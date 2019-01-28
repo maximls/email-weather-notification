@@ -49,9 +49,11 @@ const formatWeather = (weather, units) => {
       weather.timezone
     );
     obj.precipType = capitalize(obj.precipType);
-    obj.precipAccumulation = (function(value) {
-      return value !== "undefined" ? round(value, 1) : "undefined"; // precipAccumulation can be returned as undefined from the server and will break round function.
-    })(obj.precipAccumulation);
+    obj.precipAccumulation =
+      obj.precipAccumulation !== undefined
+        ? round(obj.precipAccumulation, 1)
+        : "0"; // precipAccumulation can be returned as undefined from the server and will break round function.
+
     obj.windSpeed = Math.round(obj.windSpeed);
     obj.windGust = Math.round(obj.windGust);
   });

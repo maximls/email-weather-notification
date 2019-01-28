@@ -87,15 +87,13 @@ const htmlMessage = (
               }</td>
 						</tr>
 						<tr>
-							<td colspan="2" align="center" style="font-size:18px; padding-top:15px; padding-bottom:15px"> ${
-                weatherData.daily.data[0].precipAccumulation !== "undefined" ||
-                weatherData.daily.data[0].precipAccumulation !== NaN
-                  ? `Accumulation: 
+							<td colspan="2" align="center" style="font-size:18px; padding-top:15px; padding-bottom:15px"> 
+              Accumulation: 
                     ${
                       weatherData.daily.data[0].precipAccumulation
-                    } ${weatherData.labels.precipAccumulation()}`
-                  : ""
-              }</td>
+                    } ${weatherData.labels.precipAccumulation()}
+                  
+              </td>
 						</tr>				
 						<tr>
 							<td colspan="2" align="center" style="font-size:18px; padding-top:15px; padding-bottom:45px">Wind ${
