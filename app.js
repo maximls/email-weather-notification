@@ -77,7 +77,7 @@ const updateDSToffset = async () => {
       const hours = Number.parseInt(timeHours[0], 10);
 
       if (liveTimezone.dstOffset == 3600) {
-        const springForward = rolloverHours(hours, -1); //Use rolloverHours function to limit hours to 24
+        const springForward = rolloverHours(hours, 1); //Use rolloverHours function to limit hours to 24
         User.findByIdAndUpdate(
           { _id: user._id },
           { utcTime_dst: springForward }
