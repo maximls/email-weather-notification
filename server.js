@@ -12,24 +12,27 @@ const { sendCron, updateCron } = require("./app");
 const { getRawWeather } = require("./weather/weather");
 const { validateRecaptcha } = require("./captcha/captcha");
 const hbs = require("hbs");
-const port = 3000;
+const userData = require("./user/user");
+const port = process.env.port;
 updateCron; //Check for DST at 03:00 UTC daily
 sendCron; // Send emails
 
 const app = express();
+// app.use((req, res, next) => {
+//   if (!req.secure && process.env.NODE_ENV === "development") {
+//     var secureUrl = "https://" + req.headers["host"];
+//     console.log(secureUrl);
+//     res.writeHead(301, { Location: secureUrl });
+//     res.end();
+//   }
+//   next();
+// });
 app.set("view engine", "hbs");
 hbs.registerPartials(__dirname + "/views/partials/");
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
-app.use((req, res, next) => {
-  if (!req.secure && process.env.NODE_ENV === "production") {
-    var secureUrl = "https://" + req.headers["host"] + req.url;
-    res.writeHead(301, { Location: secureUrl });
-    res.end();
-  }
-  next();
-});
 
 const httpHeaders = {
   "x-powered-by": "myserver",
@@ -59,45 +62,27 @@ app.post("/", async (req, res) => {
         throw new Error("Invalid captcha");
       }
     }
-    //Get lat/long coordinates from Google
-    const result = await geocode.getCoords(req.body.location, req.body.country);
 
-    //Check that the weather data is available for the location entered.
-    const checkWeather = await getRawWeather(
-      result.latitude,
-      result.longitude,
-      "auto"
+    const data = await userData(
+      req.body.location,
+      req.body.country,
+      req.body.time,
+      req.body.timestamp
     );
-
-    if (checkWeather.status !== 200) {
-      throw new Error("No weather data available for your location");
-    }
-
-    //Get timezone for the location entered.
-    const timezone = await time.getTimeZone(
-      `${result.latitude},${result.longitude}`,
-      Date.parse(req.body.timestamp) / 1000
-    );
-
-    //Convert entered location's timezone to UTC
-    const utcTime = await time.convertToUTC(req.body.time, timezone.rawOffset);
-
-    //Use imperial units for United States, metric for all other countries
-    const units = req.body.country === "United+States" ? "us" : "ca";
 
     //Create a new user
     user = new User({
       email: req.body.email,
-      address: result.address,
-      location: req.body.location,
+      address: data.address,
+      location: data.location,
       country: req.body.country,
-      latitude: result.latitude,
-      longitude: result.longitude,
+      latitude: data.latitude,
+      longitude: data.longitude,
       userTime: req.body.time,
-      utcTime,
+      utcTime: data.utcTime,
       utcTime_dst: "0",
-      timezone,
-      units
+      timezone: data.timezone,
+      units: data.units
     });
 
     await user.save(); //Save user to database
@@ -160,20 +145,34 @@ app.get("/update/:id", (req, res) => {
     .catch(err => res.status(400).render("error.hbs", { message: err }));
 });
 
-app.post("/update/:id", (req, res) => {
+app.post("/update/:id", async (req, res) => {
   const id = req.params.id;
   if (!ObjectID.isValid(id)) {
     res.status(404).render("error.hbs", {
       message: `Invalid user ID.`
     });
   }
+
+  const data = await userData(
+    req.body.location,
+    req.body.country,
+    req.body.time,
+    req.body.timestamp
+  );
+
   User.findByIdAndUpdate(
     { _id: id },
     {
       email: req.body.email,
-      location: req.body.location,
-      time: req.body.time,
-      units: req.body.units
+      latitude: data.latitude,
+      longitude: data.longitude,
+      address: data.address,
+      location: data.location,
+      userTime: req.body.time,
+      utcTime: data.utcTime,
+      units: data.units,
+      timezone: data.timezone,
+      utcTime_dst: ""
     },
     { new: true }
   )

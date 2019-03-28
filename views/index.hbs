@@ -4,13 +4,5 @@
         <![endif]-->
         
         {{> form}}
-        <script>
-            const timestamp = new Date();
-            const getForm = document.querySelector('form');
-            const formTimestamp = document.createElement("input");
-                formTimestamp.setAttribute('name', 'timestamp');
-                formTimestamp.setAttribute('value', timestamp);
-                formTimestamp.setAttribute('type', 'hidden')
-            getForm.appendChild(formTimestamp)
-        </script>
+  
 {{> footer}}

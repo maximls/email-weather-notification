@@ -52,7 +52,7 @@ const formatWeather = (weather, units) => {
     obj.precipAccumulation =
       obj.precipAccumulation !== undefined
         ? round(obj.precipAccumulation, 1)
-        : "0"; // precipAccumulation can be returned as undefined from the server and will break round function.
+        : 0; // precipAccumulation can be returned as undefined from the server and will break round function.
 
     obj.windSpeed = Math.round(obj.windSpeed);
     obj.windGust = Math.round(obj.windGust);

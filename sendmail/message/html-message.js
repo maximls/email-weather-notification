@@ -1,8 +1,19 @@
-const htmlMessage = (
-  weatherData,
-  location,
-  id
-) => `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+const htmlMessage = (weatherData, location, id) => {
+  //Show accumulation only if greater than 0
+  const accumulation =
+    weatherData.daily.data[0].precipAccumulation !== 0
+      ? `<tr>
+	<td colspan="2" align="center" style="font-size:18px; padding-top:15px; padding-bottom:15px"> 
+	Accumulation: 
+				${
+          weatherData.daily.data[0].precipAccumulation
+        } ${weatherData.labels.precipAccumulation()}
+	</td>
+</tr>				
+<tr>`
+      : "";
+
+  return `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -86,21 +97,13 @@ const htmlMessage = (
                 weatherData.daily.data[0].precipType
               }</td>
 						</tr>
-						<tr>
-							<td colspan="2" align="center" style="font-size:18px; padding-top:15px; padding-bottom:15px"> 
-              Accumulation: 
-                    ${
-                      weatherData.daily.data[0].precipAccumulation
-                    } ${weatherData.labels.precipAccumulation()}
-                  
-              </td>
-						</tr>				
+						${accumulation}
 						<tr>
 							<td colspan="2" align="center" style="font-size:18px; padding-top:15px; padding-bottom:45px">Wind ${
                 weatherData.daily.data[0].windSpeed
               } ${weatherData.labels.windSpeed()}, Gusts ${
-  weatherData.daily.data[0].windGust
-} ${weatherData.labels.windSpeed()}</td>
+    weatherData.daily.data[0].windGust
+  } ${weatherData.labels.windSpeed()}</td>
 						</tr>
 						<tr>
 							<td colspan="1" align="center" style="padding-bottom:20px"><a style="color:#1b89ef" href="http://www.emailweather.info/update/${id}">Update preferences</a></td>
@@ -117,5 +120,6 @@ const htmlMessage = (
 	</body>	
 </html>
 `;
+};
 
 module.exports = htmlMessage;

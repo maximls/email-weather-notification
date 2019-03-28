@@ -18,9 +18,14 @@ const sendCron = cron.schedule(`* * * * *`, () => {
   console.log("Running ", new Date().getHours());
 });
 
-//Schedule to run every day at 03:00 UTC
-const updateCron = cron.schedule(`* 3 * * *`, () => {
+// Schedule to run every day at 03:00 UTC
+// const updateCron = cron.schedule(`* 3 * * *`, () => {
+//   updateDSToffset(); //Check and update DST
+// });
+
+const updateCron = cron.schedule(`* * * * *`, () => {
   updateDSToffset(); //Check and update DST
+  console.log("Updating DST...", new Date().getHours());
 });
 
 const now = () => {
